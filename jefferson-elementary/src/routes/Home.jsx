@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Directory = () => {
+const Home = () => {
     return (
         <div>
             <h1>Welcome to My Portfolio</h1>
@@ -9,4 +9,4 @@ const Directory = () => {
     )
 }
 
-export default Directory
+export default Home
