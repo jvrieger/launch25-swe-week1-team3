@@ -19,6 +19,7 @@ function App() {
         <Route path="/directory" element={<Directory />} />
         <Route path="/calendar" element={<Calendar />} />
       </Routes>
+	  <ClassPage></ClassPage>
     </>
   )
 }
