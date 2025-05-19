@@ -7,6 +7,16 @@
 
 .class-image {
 	width: 300px;
+	display: block;
+}
+
+.class-page {
+	display: flex;
+	gap: 30px;
+}
+
+.class-page-left {
+	flex: 0 0 300px;
 }
 
 .class-menu {
@@ -31,4 +41,10 @@
 
 .class-button:hover {
 	background-color: #f0f0f0;
+}
+
+.class-page-right {
+	flex: 1;
+	padding: 20px;
+	border-radius: 5px;
 }
