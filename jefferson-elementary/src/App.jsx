@@ -6,6 +6,7 @@ import Home from './routes/Home'
 import Calendar from './routes/Calendar'
 import Directory from './routes/Directory'
 import Dashboard from './routes/Dashboard'
+import ClassPage from './routes/ClassPage'
 
 
 function App() {
