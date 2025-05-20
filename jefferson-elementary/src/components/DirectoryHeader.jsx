@@ -4,7 +4,7 @@ import "../styles/Directory.css";
 const DirectoryHeader = ({ onAddClick }) => {
   return (
     <div className="directory-header">
-      <h1>School Directory</h1>
+      <h1>Thomas Jefferson Elementary Directory</h1>
       <button 
         className="btn btn-primary"
         onClick={onAddClick}
