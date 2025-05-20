@@ -1,16 +1,66 @@
-nav {
-  width: 100%;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", sans-serif;
 }
 
-nav ul {
-  list-style: none;
+/*NAV BAR*/
+.school-header {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 20px;
+  background-color: #e0e0e0;
+  padding: 1rem 2rem;
+  gap: 1rem;
+}
+
+.school-header .logo {
+  width: 40px;
+  height: 40px;
+}
+
+.school-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+/* Navigation row */
+.main-nav {
+  display: flex;
+  justify-content: flex-end;
+  background-color: #f8f8f8;
+  padding: 0.5rem 2rem;
+}
+
+.main-nav ul {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
   margin: 0;
   padding: 0;
 }
+
+.main-nav li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.main-nav li a:hover {
+  color: #FF9505
+}
+
+.school-name-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.school-name-link:hover h1 {
+  color: #FF9505
+}
+
+/*END OF NAV BAR*/
