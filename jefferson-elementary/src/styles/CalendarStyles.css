@@ -81,3 +81,63 @@
   text-align: center;
   font-size: 1.1rem;
 }
+/* Overlay behind the modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* darken background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal box itself */
+.modal {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+}
+
+/* Modal buttons */
+.modal-buttons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Optional: Better floating + button */
+.floating-add-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  font-size: 2rem;
+  background-color: #e36905;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(251, 251, 251, 0.3);
+  cursor: pointer;
+  z-index: 999;
+}
+.floating-add-button:hover {
+  background-color: #e36905;
+}
