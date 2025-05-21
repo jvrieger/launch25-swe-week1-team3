@@ -107,7 +107,7 @@
 	font-weight: bold;
 }
 
-.save-btn {
+.save-btn, .add-student-button {
 	background-color: #EC4E20;
 	border: none;
 	border-radius: 4px;
@@ -127,6 +127,199 @@
 	background-color: #FF9505;
 }
 
-.save-btn:hover {
+.save-btn:hover, .add-student-button:hover {
 	background-color: #FF9505;
 }
+
+/* Checklist Modal Container */
+.checklist-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+	opacity: 0;
+	visibility: hidden;
+	transition: all 0.3s ease;
+  }
+  
+  .checklist-modal.active {
+	opacity: 1;
+	visibility: visible;
+  }
+  
+  /* Modal Content */
+  .checklist-modal-content {
+	background-color: white;
+	border-radius: 12px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	width: 90%;
+	max-width: 500px;
+	max-height: 80vh;
+	overflow: hidden;
+	transform: translateY(20px);
+	transition: transform 0.3s ease;
+  }
+  
+  .checklist-modal.active .checklist-modal-content {
+	transform: translateY(0);
+  }
+  
+  /* Modal Header */
+  .checklist-modal-header {
+	padding: 20px;
+	border-bottom: 1px solid #f0f0f0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+  }
+  
+  .checklist-modal-title {
+	margin: 0;
+	font-size: 1.5rem;
+	color: #333;
+	font-weight: 600;
+  }
+  
+  .checklist-modal-close {
+	background: none;
+	border: none;
+	font-size: 1.5rem;
+	cursor: pointer;
+	color: #888;
+	transition: color 0.2s;
+  }
+  
+  .checklist-modal-close:hover {
+	color: #333;
+  }
+  
+  /* Checklist Items Container */
+  .checklist-items {
+	padding: 20px;
+	max-height: 50vh;
+	overflow-y: auto;
+  }
+  
+  /* Individual Checklist Item */
+  .checklist-item {
+	display: flex;
+	align-items: center;
+	padding: 12px 0;
+	border-bottom: 1px solid #f5f5f5;
+  }
+  
+  .checklist-item:last-child {
+	border-bottom: none;
+  }
+  
+  .checklist-item-input {
+	margin-right: 12px;
+	width: 20px;
+	height: 20px;
+	accent-color: #FF9505;
+	cursor: pointer;
+  }
+  
+  .checklist-item-label {
+	flex: 1;
+	font-size: 1rem;
+	color: #444;
+	cursor: pointer;
+  }
+  
+  .checklist-item-delete {
+	background: none;
+	border: none;
+	color: #EC4E20;
+	cursor: pointer;
+	font-size: 1.2rem;
+	padding: 0 8px;
+	transition: color 0.2s;
+  }
+  
+  .checklist-item-delete:hover {
+	color: #FF9505;
+  }
+  
+  /* Add New Item Section */
+  .checklist-add-item {
+	display: flex;
+	padding: 20px;
+	border-top: 1px solid #f0f0f0;
+  }
+  
+  .checklist-add-input {
+	flex: 1;
+	padding: 10px 15px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	font-size: 1rem;
+	margin-right: 10px;
+	transition: border-color 0.2s;
+  }
+  
+  .checklist-add-input:focus {
+	outline: none;
+	border-color: #4a90e2;
+	box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+  
+  .checklist-add-button {
+	background-color: #4a90e2;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	padding: 10px 20px;
+	cursor: pointer;
+	font-size: 1rem;
+	transition: background-color 0.2s;
+  }
+  
+  .checklist-add-button:hover {
+	background-color: #3a7bc8;
+  }
+  
+  /* Modal Footer */
+  .checklist-modal-footer {
+	padding: 15px 20px;
+	display: flex;
+	justify-content: flex-end;
+	border-top: 1px solid #f0f0f0;
+  }
+  
+  .checklist-save-button {
+	background-color: #4CAF50;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	padding: 10px 20px;
+	cursor: pointer;
+	font-size: 1rem;
+	transition: background-color 0.2s;
+  }
+  
+  .checklist-save-button:hover {
+	background-color: #3e8e41;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 600px) {
+	.checklist-modal-content {
+	  width: 95%;
+	}
+	
+	.checklist-add-item {
+	  flex-direction: column;
+	}
+	
+	.checklist-add-input {
+	  margin-right: 0;
+	  margin-bottom: 10px;
+	}
+  }

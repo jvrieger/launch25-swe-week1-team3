@@ -52,23 +52,36 @@ const AddStudentsModal = ({ onClose, onAddStudents }) => {
 						<p>Loading students...</p>
 					) : (
 						<>
-							<div className="students-list">
+							<div className="checklist-items students-list">
 								{allStudents.map(student => (
-									<div key={student.id} className="student-item">
-										<label>
-											<input
-												type="checkbox"
-												checked={selectedStudents.includes(student.id)}
-												onChange={() => handleStudentSelect(student.id)}
-											/>
-											{student.first_name} {student.last_name}
-										</label>
+									<div key={student.id} className="checklist-item student-item">
+									<input
+										className="checklist-item-input select-students"
+										type="checkbox"
+										id={`student-${student.id}`}
+										checked={selectedStudents.includes(student.id)}
+										onChange={() => handleStudentSelect(student.id)}
+									/>
+									<label 
+										className="checklist-item-label" 
+										htmlFor={`student-${student.id}`}
+									>
+										{student.first_name} {student.last_name}
+									</label>
+									{/* Add delete button if needed */}
+									{/* <button 
+										className="checklist-item-delete"
+										onClick={() => handleDeleteStudent(student.id)}
+									>
+										×
+									</button> */}
 									</div>
 								))}
 							</div>
 							<div className="modal-actions">
-								<button type="button" onClick={onClose}>Cancel</button>
+								<button className="cancel-btn" type="button" onClick={onClose}>Cancel</button>
 								<button
+									className="save-btn"
 									onClick={handleAddSelectedStudents}
 									disabled={selectedStudents.length === 0}
 								>
