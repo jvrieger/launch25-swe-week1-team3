@@ -92,7 +92,7 @@ const ClassEditModal = ({ classData, onClose, onSubmit, onAddStudents }) => {
 							<p>Loading teachers...</p>
 						) : (
 							<select
-								name="teacherId"
+								name="teacher"
 								value={formData.teacher || ''}
 								onChange={handleChange}
 							>
