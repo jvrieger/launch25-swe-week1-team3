@@ -3,6 +3,7 @@ import { useState } from 'react'
 import placeholder from '../assets/placeholder.jpg'
 import '../styles/classpage.css'
 import { data } from 'react-router-dom'
+import Navbar from '../components/Navbar'
 
 const ClassPage = () => {
 
@@ -48,6 +49,7 @@ const ClassPage = () => {
 
 	return (
 		<div>
+			<Navbar />
 			<h1 className='class-title'>
 				class code - class title
 			</h1>

@@ -8,17 +8,13 @@ const fetchAllStudents = async () => {
 
 export default fetchAllStudents;
 
-// EXAMPLE RESPONSE - fetchAllPeople
+// EXAMPLE RESPONSE - fetchAllStudents
 
 // [
 //     {
 //         id: '60xaR2IGiMK9l56r9Qtb',
-//         firstName: 'James',
-//         lastName: 'Daniel'
-//     },
-//     {
-//         id: 'JSPodNwcCwisZ78g7aiG',
-//         lastName: 'Doe',
-//         firstName: 'John'
+//         classes: { grade: 90, gradeLevel: 'First' }
+//         firstName: 'John',
+//         lastName: 'Smith'
 //     }
 // ]
