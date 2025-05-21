@@ -1,0 +1,83 @@
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 2rem;
+}
+
+.calendar-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #003366;
+}
+
+.calendar-instructions {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.calendar-box {
+  background-color: #085478;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+.school-calendar {
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* Header */
+.school-calendar__navigation {
+  background-color: #003366;
+  color: white;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+/* Weekdays */
+.school-calendar__month-view__weekdays {
+  background-color: #003366;
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Days */
+.react-calendar__tile {
+  height: 100px;
+  font-size: 1rem;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.react-calendar__tile--now {
+  background-color: #e6f7ff !important;
+}
+
+.react-calendar__tile--active {
+  background-color: #ffcc00 !important;
+  color: #000 !important;
+}
+
+.react-calendar__tile:hover {
+  background-color: #cce5ff !important;
+  cursor: pointer;
+}
+
+.calendar-event {
+  font-size: 0.75rem;
+  color: #333;
+  margin-top: 0.25rem;
+}
+
+.selected-date {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 1.1rem;
+}
