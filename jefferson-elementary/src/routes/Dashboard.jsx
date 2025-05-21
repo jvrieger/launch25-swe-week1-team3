@@ -69,6 +69,9 @@ const Dashboard = () => {
     {/* ─────────────────────────────────────────────
           Class Cards
       ───────────────────────────────────────────── */}
+      <div className="dashboard-header">
+      <h1>Class Dashboard</h1>
+      </div>
       <div className="container">
         {classes.map((cls) => (
           <div className="box-wrapper" key={cls.id}>
@@ -166,10 +169,10 @@ const Dashboard = () => {
               required
             />
             <div className="form-buttons">
+              <button type="button" onClick={() => setShowForm(false)}>Cancel</button>
               <button type="submit" disabled={loading}>
                 {loading ? "Submitting..." : "Submit"}
               </button>
-              <button type="button" onClick={() => setShowForm(false)}>Cancel</button>
             </div>
           </form>
         </div>

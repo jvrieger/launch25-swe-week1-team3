@@ -84,8 +84,8 @@ const ClassEditModal = ({ classData, onClose, onSubmit, onAddStudents }) => {
 					</div>
 
 					<div className="modal-actions">
-						<button type="button" onClick={onClose}>Cancel</button>
-						<button type="submit">Save Changes</button>
+						<button className="cancel-btn" type="button" onClick={onClose}>Cancel</button>
+						<button className='save-btn' type="submit">Save Changes</button>
 					</div>
 
 				</form>

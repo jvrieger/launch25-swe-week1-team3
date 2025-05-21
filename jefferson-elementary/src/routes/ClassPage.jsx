@@ -285,6 +285,9 @@ const ClassPage = () => {
 			<h1 className='class-title'>
 				{classData?.teacher ? `${teachers[0]?.name || 'Unknown'}'s Class` : 'Class'}
 			</h1>
+			<h3 className='class-subject'>
+				{classData?.subject}
+			</h3>
 			<div className='class-page'>
 				<div className='class-page-left'>
 					<img className='class-image' src={placeholder}></img>
