@@ -169,10 +169,12 @@
   margin-top: 20px;
 }
 
-.loading {
-  text-align: center;
-  padding: 40px;
-  font-size: 18px;
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.5rem;
   color: #666;
 }
 

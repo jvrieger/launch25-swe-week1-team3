@@ -1,60 +1,106 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DirectoryHeader from '../components/DirectoryHeader';
 import DirectoryTabs from '../components/DirectoryTabs';
 import DirectoryPersonList from '../components/DirectoryPersonList';
 import DirectoryAddPerson from '../components/DirectoryAddPerson';
 import "../styles/Directory.css";
+import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { db } from '../../firebase'
 
 const Directory = () => {
   const [activeTab, setActiveTab] = useState('students');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPerson, setEditingPerson] = useState(null);
-
-  // Sample data - will be replaced with Firebase data later
+  const [loading, setLoading] = useState(true);
   const [people, setPeople] = useState({
-    students: [
-      {
-        id: 1,
-        first_name: 'Emma',
-        last_name: 'Johnson',
-        type: 'student',
-        gradeLevel: 3,
-        birthday: "2004-04-21",
-        classes: ["Math", "Science"]
-      },
-      // more students...
-    ],
-    teachers: [
-      {
-        id: 101,
-        name: 'Mr. Smith',
-        type: 'teacher',
-        classes: ["Math", "English"]
-      },
-      // more teachers...
-    ]
+    students: [],
+    teachers: []
   });
 
-  const handleAddPerson = (person) => { 
-    const newPeople = {...people};
-    newPeople[activeTab] = [...newPeople[activeTab], person];
-    setPeople(newPeople);
+  // Fetch Data from Firestore
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch students
+        const studentsSnapshot = await getDocs(collection(db, 'students'));
+        const studentsData = studentsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        // Fetch teachers
+        const teachersSnapshot = await getDocs(collection(db, 'teachers'));
+        const teachersData = teachersSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        setPeople({
+          students: studentsData,
+          teachers: teachersData
+        });
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
+
+  const handleAddPerson = async (person) => {
+    try {
+      const collectionName = activeTab; // 'students' or 'teachers'
+      const docRef = await addDoc(collection(db, collectionName), person);
+      
+      // Update local state with the new person (including the auto-generated ID)
+      const newPerson = { ...person, id: docRef.id };
+      const newPeople = { ...people };
+      newPeople[activeTab] = [...newPeople[activeTab], newPerson];
+      setPeople(newPeople);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
   };
 
-  const handleEditPerson = (updatedPerson) => {
-    const newPeople = {...people};
-    newPeople[activeTab] = newPeople[activeTab].map(person => 
-      person.id === updatedPerson.id ? updatedPerson : person
-    );
-    setPeople(newPeople);
+  const handleEditPerson = async (updatedPerson) => {
+    try {
+      const collectionName = activeTab; // 'students' or 'teachers'
+      const personRef = doc(db, collectionName, updatedPerson.id);
+      await updateDoc(personRef, updatedPerson);
+      
+      // Update local state
+      const newPeople = { ...people };
+      newPeople[activeTab] = newPeople[activeTab].map(person => 
+        person.id === updatedPerson.id ? updatedPerson : person
+      );
+      setPeople(newPeople);
+    } catch (error) {
+      console.error("Error updating document: ", error);
+    }
   };
 
-  const handleDeletePerson = (id) => {
-    const newPeople = {...people};
-    newPeople[activeTab] = newPeople[activeTab].filter(person => person.id !== id);
-    setPeople(newPeople);
+  const handleDeletePerson = async (id) => {
+    try {
+      const collectionName = activeTab;
+      await deleteDoc(doc(db, collectionName, id));
+      
+      // Update local state
+      const newPeople = { ...people };
+      newPeople[activeTab] = newPeople[activeTab].filter(person => person.id !== id);
+      setPeople(newPeople);
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+    }
   };
 
+  if (loading) {
+    return <div className="loading-container">Loading...</div>;
+  }
+  
   return (
     <div className="directory-container">
       <DirectoryHeader 

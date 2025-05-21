@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import "../styles/Directory.css";
 
 const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData }) => {
-  const [formData, setFormData] = useState({
+  // function to return the initial empty state (reset form for new person)
+  const getInitialState = () => ({
     addClass: '',
+    classes: [],
     ...(personType === 'student' ? { 
       first_name: '', 
       last_name: '', 
@@ -11,9 +13,9 @@ const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData
       birthday: '' 
     } : { 
       name: '' 
-    }),
-    classes: []
+    })
   });
+  const [formData, setFormData] = useState(getInitialState());
 
   useEffect(() => {
     if (initialData) {
@@ -24,18 +26,9 @@ const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData
         classes: initialData.classes || []
       });
     } else {
-      setFormData({
-        addClass: '',
-        ...(personType === 'student' ? { 
-          first_name: '', 
-          last_name: '', 
-          gradeLevel: '', 
-          birthday: '' 
-        } : { 
-          name: '' })
-      });
+      setFormData(getInitialState());
     }
-  }, [initialData, personType]);
+  }, [initialData, personType, isOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
