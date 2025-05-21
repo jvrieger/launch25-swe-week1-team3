@@ -55,11 +55,11 @@ const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({
-      ...formData,
-      id: initialData ? initialData.id : Date.now(), // temporary ID generation
-      type: personType
-    });
+    const submissionData = initialData 
+    ? { ...formData } // For edits, keep existing ID
+    : { ...formData, type: personType }; // For new entries, just add type
+  
+    onSubmit(submissionData);
     onClose();
   };
 

@@ -6,6 +6,7 @@ import Home from './routes/Home'
 import Calendar from './routes/Calendar'
 import Directory from './routes/Directory'
 import Dashboard from './routes/Dashboard'
+import ClassPage from './routes/ClassPage'
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/directory" element={<Directory />} />
         <Route path="/calendar" element={<Calendar />} />
+		 <Route path="/classes/:classId" element={<ClassPage />} />
       </Routes>
     </>
   )
