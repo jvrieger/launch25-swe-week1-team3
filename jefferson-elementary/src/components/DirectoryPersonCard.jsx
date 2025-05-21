@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import "../styles/Directory.css";
+import { db } from "../../firebase";
+import { collection, getDocs } from "firebase/firestore";
+
 
 const gradeLevelMap = {
   0: 'Kindergarten',
@@ -11,6 +14,27 @@ const gradeLevelMap = {
 };
 
 const DirectoryPersonCard = ({ person, onEdit, onDelete }) => {
+  const [classMap, setClassMap] = useState({});
+
+  // to use classId to get classDescription to display
+  useEffect(() => {
+    const fetchClasses = async () => {
+      const snapshot = await getDocs(collection(db, "classes"));
+      const map = {};
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        map[doc.id] = data.description; 
+      });
+      setClassMap(map);
+    };
+    fetchClasses();
+  }, []);
+
+  const getClassDescriptions = (ids) => {
+    if (!Array.isArray(ids)) return ids;
+    return ids.map(id => classMap[id] || id).join(', ');
+  };
+
   return (
     <div className="person-card">
       <div className="person-info">
@@ -19,7 +43,7 @@ const DirectoryPersonCard = ({ person, onEdit, onDelete }) => {
             <h3>{person.first_name} {person.last_name}</h3>
             <p>Birth Date: {person.birthday}</p>
             <p>Grade Level: {gradeLevelMap[person.gradeLevel]}</p>
-            <p>Classes: {Array.isArray(person.classes) ? person.classes.join(', ') : person.classes}</p>
+            <p>Classes: {getClassDescriptions(person.classes)}</p>
           </>
         ) : (
           <>
