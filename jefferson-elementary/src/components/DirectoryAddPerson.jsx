@@ -3,19 +3,36 @@ import "../styles/Directory.css";
 
 const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    contact: '',
-    ...(personType === 'student' ? { grade: '', birthDate: '' } : { subject: '' })
+    addClass: '',
+    ...(personType === 'student' ? { 
+      first_name: '', 
+      last_name: '', 
+      gradeLevel: '', 
+      birthday: '' 
+    } : { 
+      name: '' 
+    }),
+    classes: []
   });
 
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);
+      setFormData({
+        ...initialData,
+        addClass: '', // Reset addClass field
+        // Ensure classes is always an array
+        classes: initialData.classes || []
+      });
     } else {
       setFormData({
-        name: '',
-        contact: '',
-        ...(personType === 'student' ? { grade: '', birthDate: '' } : { subject: '' })
+        addClass: '',
+        ...(personType === 'student' ? { 
+          first_name: '', 
+          last_name: '', 
+          gradeLevel: '', 
+          birthday: '' 
+        } : { 
+          name: '' })
       });
     }
   }, [initialData, personType]);
@@ -23,6 +40,24 @@ const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddClass = (e) => {
+    e.preventDefault();
+    if (formData.addClass.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        classes: [...prev.classes, formData.addClass.trim()],
+        addClass: ''
+      }));
+    }
+  };
+
+  const handleDeleteClass = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      classes: prev.classes.filter((_, i) => i !== index)
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -42,71 +77,112 @@ const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData
       <div className="modal-content">
         <h2>{initialData ? 'Edit' : 'Add New'} {personType}</h2>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Contact</label>
-            <input
-              type="text"
-              name="contact"
-              value={formData.contact}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
           {personType === 'student' ? (
             <>
               <div className="form-group">
-                <label>Grade</label>
-                <select
-                  name="grade"
-                  value={formData.grade}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Grade</option>
-                  <option value="Kindergarten">Kindergarten</option>
-                  <option value="1st">1st Grade</option>
-                  <option value="2nd">2nd Grade</option>
-                  <option value="3rd">3rd Grade</option>
-                  <option value="4th">4th Grade</option>
-                  <option value="5th">5th Grade</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Birth Date</label>
+                <label>First Name</label>
                 <input
-                  type="date"
-                  name="birthDate"
-                  value={formData.birthDate}
+                  type="text"
+                  name="first_name"
+                  value={formData.first_name}
                   onChange={handleChange}
                   required
                 />
               </div>
+              <div className="form-group">
+                <label>Last Name</label>
+                <input
+                  type="text"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Birth Date</label>
+                <input
+                  type="date"
+                  name="birthday"
+                  value={formData.birthday}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Grade Level</label>
+                <select
+                  name="gradeLevel"
+                  value={formData.gradeLevel}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" >Select Grade</option>
+                  <option value="0" >Kindergarten</option>
+                  <option value="1" >1st Grade</option>
+                  <option value="2" >2nd Grade</option>
+                  <option value="3" >3rd Grade</option>
+                  <option value="4" >4th Grade</option>
+                  <option value="5" >5th Grade</option>
+                </select>
+              </div>
             </>
           ) : (
             <div className="form-group">
-              <label>Subject</label>
+              <label>Name</label>
               <input
                 type="text"
-                name="subject"
-                value={formData.subject}
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
                 required
               />
             </div>
           )}
+
+          <div className="form-group">
+            <label>Current Classes</label>
+            <div className="classes-list">
+              {formData.classes && formData.classes.length > 0 ? (
+                formData.classes.map((className, index) => (
+                  <div key={index} className="class-item">
+                    <span>{className}</span>
+                    <button
+                      type="button"
+                      className="btn btn-delete-small"
+                      onClick={() => handleDeleteClass(index)}
+                      aria-label={`Delete ${className}`}
+                    >
+                      x
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p>No classes added yet</p>
+              )}
+            </div>
+          </div>
+          
+          <div className="form-group">
+            <label>Add New Class</label>
+            <div className="add-class-container">
+              <input
+                type="text"
+                name="addClass"
+                value={formData.addClass}
+                onChange={handleChange}
+                placeholder="Enter class name"
+              />
+              <button
+                type="button"
+                className="btn btn-add"
+                onClick={handleAddClass}
+                disabled={!formData.addClass.trim()}
+              >
+                Add
+              </button>
+            </div>
+          </div>
 
           <div className="modal-actions">
             <button type="button" className="btn btn-cancel" onClick={onClose}>

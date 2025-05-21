@@ -1,22 +1,32 @@
 import React from 'react';
 import "../styles/Directory.css";
 
+const gradeLevelMap = {
+  0: 'Kindergarten',
+  1: '1st Grade',
+  2: '2nd Grade',
+  3: '3rd Grade',
+  4: '4th Grade',
+  5: '5th Grade'
+};
+
 const DirectoryPersonCard = ({ person, onEdit, onDelete }) => {
   return (
     <div className="person-card">
       <div className="person-info">
-        <h3>{person.name}</h3>
         {person.type === 'student' ? (
           <>
-            <p>Grade: {person.grade}</p>
-            <p>Birth Date: {person.birthDate}</p>
+            <h3>{person.first_name} {person.last_name}</h3>
+            <p>Birth Date: {person.birthday}</p>
+            <p>Grade Level: {gradeLevelMap[person.gradeLevel]}</p>
+            <p>Classes: {Array.isArray(person.classes) ? person.classes.join(', ') : person.classes}</p>
           </>
         ) : (
           <>
-            <p>Subject: {person.subject}</p>
+            <h3>{person.name}</h3>
+            <p>Classes: {Array.isArray(person.classes) ? person.classes.join(', ') : person.classes}</p>
           </>
         )}
-        <p>Contact: {person.contact}</p>
       </div>
       <div className="person-actions">
         <button 

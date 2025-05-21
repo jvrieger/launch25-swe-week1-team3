@@ -15,11 +15,12 @@ const Directory = () => {
     students: [
       {
         id: 1,
-        name: 'Emma Johnson',
+        first_name: 'Emma',
+        last_name: 'Johnson',
         type: 'student',
-        grade: '3rd',
-        birthDate: '2015-04-12',
-        contact: 'emma.johnson@example.com'
+        gradeLevel: 3,
+        birthday: "2004-04-21",
+        classes: ["Math", "Science"]
       },
       // more students...
     ],
@@ -28,14 +29,13 @@ const Directory = () => {
         id: 101,
         name: 'Mr. Smith',
         type: 'teacher',
-        subject: 'Mathematics',
-        contact: 'smith@tjelementary.edu'
+        classes: ["Math", "English"]
       },
       // more teachers...
     ]
   });
 
-  const handleAddPerson = (person) => {
+  const handleAddPerson = (person) => { 
     const newPeople = {...people};
     newPeople[activeTab] = [...newPeople[activeTab], person];
     setPeople(newPeople);
