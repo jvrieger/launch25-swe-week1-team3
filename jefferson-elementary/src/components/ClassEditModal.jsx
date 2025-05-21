@@ -6,39 +6,43 @@ import '../styles/ClassPage.css'
 const ClassEditModal = ({ classData, onClose, onSubmit, onAddStudents }) => {
 
 	const [formData, setFormData] = useState(classData);
-	const [allTeachers, setAllTeachers] = useState([]);
-	const [loadingTeachers, setLoadingTeachers] = useState(true);
+	// const [allTeachers, setAllTeachers] = useState([]);
+	// const [loadingTeachers, setLoadingTeachers] = useState(true);
 
 	useEffect(() => {
 		setFormData(classData);
 	}, [classData]);
 
 	// fetching data from database
-	useEffect(() => {
+	// useEffect(() => {
 
-		// fetch teachers
-		const fetchTeachers = async () => {
-			try {
-				const teachersSnapshot = await getDocs(collection(db, 'teachers'));
-				const teachersData = teachersSnapshot.docs.map(doc => ({
-					id: doc.id,
-					...doc.data()
-				}));
-				setAllTeachers(teachersData);
-			} catch (error) {
-				console.error("Error fetching teachers: ", error);
-			} finally {
-				setLoadingTeachers(false);
-			}
-		};
+	// 	// // fetch teachers
+	// 	// const fetchTeachers = async () => {
+	// 	// 	try {
+	// 	// 		const teachersSnapshot = await getDocs(collection(db, 'teachers'));
+	// 	// 		const teachersData = teachersSnapshot.docs.map(doc => ({
+	// 	// 			id: doc.id,
+	// 	// 			...doc.data()
+	// 	// 		}));
+	// 	// 		setAllTeachers(teachersData);
+	// 	// 	} catch (error) {
+	// 	// 		console.error("Error fetching teachers: ", error);
+	// 	// 	} finally {
+	// 	// 		setLoadingTeachers(false);
+	// 	// 	}
+	// 	// };
 
-		fetchTeachers();
+	// 	// fetchTeachers();
 
-	}, []);
+	// }, []);
 	
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setFormData(prev => ({ ...prev, [name]: value }));
+		if (name === "teacher") {
+			setFormData(prev => ({...prev, [name]: value}))
+		} else {
+			setFormData(prev => ({ ...prev, [name]: value }));
+		}
 	};
 
 	const handleSubmit = (e) => {
@@ -51,7 +55,7 @@ const ClassEditModal = ({ classData, onClose, onSubmit, onAddStudents }) => {
 			<div className="modal-content">
 				<h2>Edit Class</h2>
 				<form onSubmit={handleSubmit}>
-					<div className="form-group">
+					{/* <div className="form-group">
 						<label>Teacher</label>
 						{loadingTeachers ? (
 							<p>Loading...</p>
@@ -69,7 +73,7 @@ const ClassEditModal = ({ classData, onClose, onSubmit, onAddStudents }) => {
 								))}
 							</select>
 						)}
-					</div>
+					</div> */}
 					<div className="form-group">
 						<label>Description</label>
 						<textarea
@@ -83,7 +87,7 @@ const ClassEditModal = ({ classData, onClose, onSubmit, onAddStudents }) => {
 						<button type="button" onClick={onClose}>Cancel</button>
 						<button type="submit">Save Changes</button>
 					</div>
-					
+
 				</form>
 			</div>
 		</div>

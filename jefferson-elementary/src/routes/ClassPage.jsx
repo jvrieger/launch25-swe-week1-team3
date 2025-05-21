@@ -53,8 +53,21 @@ const ClassPage = () => {
 
 				// teacher data
 				if (classDoc.data().teacher) {
-					const teacherDoc = await getDoc(doc(db, "teachers", classDoc.data().teacher));
-					setTeachers([{ id: teacherDoc.id, ...teacherDoc.data() }]);
+					const teacherName = classDoc.data().teacher;
+					
+					// teacher name stored as id
+					try {
+						const teacherDoc = await getDoc(doc(db, "teachers", classDoc.data().teacher));
+						if (teacherDoc.exists()) {
+							setTeachers([{ id: teacherDoc.id, ...teacherDoc.data() }]);
+						} else {
+							// teacher name stored as name (when setting class)
+							setTeachers([{ id: "unknown", name: teacherName }]);
+						}
+					} catch (error) {
+						// set as name by default 
+						setTeachers([{ id: "unknown", name: teacherName }]);
+					}
 				}
 
 			} catch (error) {
@@ -77,16 +90,16 @@ const ClassPage = () => {
 			setClassData(prev => ({ ...prev, ...updatedData }));
 
 			// if the teacher for the class was updated, get new teacher data to change page
-			if (updatedData.teacher !== classData.teacher) {
-				const teacherDoc = await getDoc(doc(db, "teachers", updatedData.teacher));
-				if (teacherDoc.exists()) {
-					setTeachers([{ id: teacherDoc.id, ...teacherDoc.data() }]);
-				} else {
-					setTeachers([]);
-				}
-			} else {
-				setTeachers([]);
-			}
+			// if (updatedData.teacher !== classData.teacher) {
+			// 	const teacherDoc = await getDoc(doc(db, "teachers", updatedData.teacher));
+			// 	if (teacherDoc.exists()) {
+			// 		setTeachers([{ id: teacherDoc.id, ...teacherDoc.data() }]);
+			// 	} else {
+			// 		setTeachers([]);
+			// 	}
+			// } else {
+			// 	setTeachers([]);
+			// }
 
 			setIsEditModalOpen(false);
 			setIsAddStudentsModalOpen(false);
