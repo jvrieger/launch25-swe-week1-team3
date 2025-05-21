@@ -1,57 +1,260 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom';
 import placeholder from '../assets/placeholder.jpg'
-import '../styles/classpage.css'
-import { data } from 'react-router-dom'
+import '../styles/ClassPage.css'
 import Navbar from '../components/Navbar'
+import DirectoryPersonList from '../components/DirectoryPersonList';
+import { doc, getDoc, updateDoc, getDocs, collection, deleteField } from "firebase/firestore";
+import { db } from '../../firebase';
+import ClassEditModal from '../components/ClassEditModal';
+import "../styles/Directory.css";
 
 const ClassPage = () => {
 
+	const { classId } = useParams();
+	const navigate = useNavigate();
 	const [selectedTab, setSelectedTab] = useState('Overview')
+	const [classData, setClassData] = useState(null);
+	const [students, setStudents] = useState([]);
+	const [teachers, setTeachers] = useState([]);
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [loading, setLoading] = useState(true);
 
-	const dataPlaceHolder = {
-		classCode: 'CS101',
-		title: 'Intro to Computer Science',
-		description: 'This is a class.',
-		professor: 'Mr. Potato Head',
-	};
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				setLoading(true);
+
+				// class data
+				const classDocRef = doc(db, "classes", classId);
+				const classDoc = await getDoc(classDocRef);
+
+				if (!classDoc.exists()) {
+					navigate('/');
+					return;
+				}
+				setClassData(classDoc.data());
+
+				// student data
+				const studentIds = Object.keys(classDoc.data().students || {});
+				const studentPromises = studentIds.map(async (id) => {
+					const studentDoc = await getDoc(doc(db, "students", id));  // Fixed
+					return {
+						id,
+						...studentDoc.data(),
+						grade: classDoc.data().students[id]
+					};
+				});
+				const fetchedStudents = await Promise.all(studentPromises);
+				setStudents(fetchedStudents);
+
+				// teacher data
+				if (classDoc.data().teacher) {
+					const teacherDoc = await getDoc(doc(db, "teachers", classDoc.data().teacher));
+					setTeachers([{ id: teacherDoc.id, ...teacherDoc.data() }]);
+				}
+
+			} catch (error) {
+				console.error("Error fetching data: ", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchData();
+	}, [classId, navigate]);
 
 	const handleTabChange = (tabName) => {
 		setSelectedTab(tabName);
 	}
 
-	const render = () => {
+	const handleUpdateClass = async (updatedData) => {
+		try {
+			const classDocRef = doc(db, "classes", classId);
+			await updateDoc(classDocRef, updatedData);
+			setClassData(prev => ({ ...prev, ...updatedData }));
+			setIsEditModalOpen(false);
+		} catch (error) {
+			console.error("Error updating class. ", error)
+		}
+	}
+
+	const handleAddStudents = async (studentIds) => {
+		const classDocRef = doc(db, "classes", classId);
+		const classDoc = await getDoc(classDocRef);
+		const currentStudents = classDoc.data().students || {};
+
+		//adding new students with initial grade 0
+		const updatedStudents = { ...currentStudents };
+		studentIds.forEach(id => {
+			if (!updatedStudents[id]) {
+				updatedStudents[id] = 0;
+			}
+		});
+
+		// get new grade average
+		const grades = Object.values(updatedStudents);
+		const newAvg = grades.length > 0 ?
+			grades.reduce((sum, grade) => sum + grade, 0) / grades.length : 0;
+
+		await updateDoc(classDocRef, {
+			students: updatedStudents,
+			gradeAvg: newAvg
+		});
+
+		// refresh student list
+		const studentPromises = Object.keys(updatedStudents).map(async (id) => {
+			const studentDoc = await getDoc(doc(db, "students", id));
+			return {
+				id,
+				...studentDoc.data(),
+				grade: updatedStudents[id]
+			};
+		});
+
+		const fetchedStudents = await Promise.all(studentPromises);
+		setStudents(fetchedStudents);
+
+	}
+
+	// deleting students from a class
+	const handleRemoveStudent = async (studentId) => {
+		try {
+			const classDocRef = doc(db, "classes", classId);
+			// remove student 
+			await updateDoc(classDocRef, {
+				[`students.${studentId}`]: deleteField()
+			});
+
+			// get new grade average 
+			const classDoc = await getDoc(classDocRef);
+			const updatedStudents = classDoc.data().students || {};
+			const grades = Object.values(updatedStudents);
+			const newAvg = grades.length > 0 ?
+				grades.reduce((sum, grade) => sum + grade, 0) / grades.length : 0;
+
+			await updateDoc(classDocRef, {
+				gradeAvg: newAvg
+			});
+
+			setStudents(prev => prev.filter(s => s.id !== studentId));
+
+		} catch (error) {
+			console.error("Error removing student: ", error);
+		}
+	};
+
+	const handleUpdateGrade = async (studentId, newGrade) => {
+		try {
+			const classDocRef = doc(db, "classes", classId);
+
+			// update student's grade
+			await updateDoc(classDocRef, {
+				[`students.${studentId}`]: newGrade
+			});
+
+			// new grade average
+			const classDoc = await getDoc(classDocRef);
+			const updatedStudents = classDoc.data().students || {};
+			const grades = Object.values(updatedStudents);
+			const newAvg = grades.reduce((sum, grade) => sum + grade, 0) / grades.length;
+
+			await updateDoc(classDocRef, {
+				gradeAvg: newAvg
+			});
+
+			setStudents(prev =>
+				prev.map(s => s.id === studentId ? { ...s, grade: newGrade } : s)
+			);
+
+		} catch (error) {
+			console.error("Error updating grade: ", error);
+		}
+	};
+
+	const renderTab = () => {
+		if (loading) return <div className="loading">Loading Page ...</div>;
+		if (!classData) return <div>Error finding class</div>
+
+
 		switch (selectedTab) {
 			case 'Overview':
 				return (
 					<div className='overview-container'>
 						<h2>Overview</h2>
-						<h3>Professor</h3>
-						<p>{dataPlaceHolder.professor}</p>
+						<button
+							className="edit-button"
+							onClick={() => setIsEditModalOpen(true)}
+						>
+							Edit
+						</button>
+						<h3>Teacher</h3>
+						<p>{teachers[0]?.name || 'No teacher assigned'}</p>
 						<h3>Description</h3>
-						<p>{dataPlaceHolder.description}</p>
+						<p>{classData.description}</p>
+						<h3>Average Grade</h3>
+						<p>{typeof classData.gradeAvg === 'number' ? classData.gradeAvg.toFixed(2) : 'Not available'}</p>
 					</div>
 				);
+
 			case 'Roster':
 				return (
 					<div className='roster-container'>
-						<h2>Class Roster</h2>
+						<div className='roster-header'>
+							<h2>Class Roster</h2>
+							<button
+								className="add-student-button"
+								onClick={() => setIsEditModalOpen(true)}
+							>
+								Add Students
+							</button>
+
+						</div>
+						<DirectoryPersonList
+							people={students}
+							onEdit={(student) => {
+								const newGrade = prompt("enter new grade:", student.grade);
+								if (newGrade !== null && !isNaN(newGrade)) {
+									handleUpdateGrade(student.id, parseFloat(newGrade));
+								}
+							}}
+							onDelete={handleRemoveStudent}
+							showGrade={true}
+						/>
 					</div>
 				);
 			case 'Grades':
 				return (
 					<div className='grades-container'>
 						<h2>Grades</h2>
+						<h3>Average Grade</h3>
+						<p>{typeof classData.gradeAvg === 'number' ? classData.gradeAvg.toFixed(2) : 'Not available'}</p>
+						<div className="grades-list">
+							{students.map(student => (
+								<div key={student.id} className="grade-item">
+									<span>{`${student.first_name} ${student.last_name}`}</span>
+									<input
+										type="number"
+										value={student.grade}
+										onChange={(e) => handleUpdateGrade(student.id, parseFloat(e.target.value))}
+										min="0"
+										max="100"
+										step="0.1"
+									/>
+								</div>
+							))}
+						</div>
 					</div>
 				);
+			default:
+				return null;
 		};
 	}
 
 	return (
 		<div>
-			<Navbar />
 			<h1 className='class-title'>
-				class code - class title
+				{classData?.teacher ? `${teachers[0]?.name || 'Unknown'}'s Class` : 'Class'}
 			</h1>
 			<div className='class-page'>
 				<div className='class-page-left'>
@@ -78,12 +281,21 @@ const ClassPage = () => {
 					</div>
 				</div>
 				<div className='class-page-right'>
-					{render()}
+					{renderTab()}
 				</div>
 			</div>
 
+			{isEditModalOpen && classData && (
+				<ClassEditModal
+					classData={classData}
+					onClose={() => setIsEditModalOpen(false)}
+					onSubmit={handleUpdateClass}
+					onAddStudents={handleAddStudents}
+				/>
+			)}
+
 		</div>
 	)
-}
+};
 
 export default ClassPage
