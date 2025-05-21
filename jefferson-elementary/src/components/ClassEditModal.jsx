@@ -6,11 +6,6 @@ import '../styles/ClassPage.css'
 const ClassEditModal = ({ classData, onClose, onSubmit, onAddStudents }) => {
 
 	const [formData, setFormData] = useState(classData);
-
-	const [allStudents, setAllStudents] = useState([]);
-	const [selectedStudents, setSelectedStudents] = useState([]);
-	const [loadingStudents, setLoadingStudents] = useState(true);
-
 	const [allTeachers, setAllTeachers] = useState([]);
 	const [loadingTeachers, setLoadingTeachers] = useState(true);
 
@@ -18,26 +13,9 @@ const ClassEditModal = ({ classData, onClose, onSubmit, onAddStudents }) => {
 		setFormData(classData);
 	}, [classData]);
 
-
-
 	// fetching data from database
 	useEffect(() => {
 
-		// fetch students from firestore
-		const fetchStudents = async () => {
-			try {
-				const studentsSnapshot = await getDocs(collection(db, 'students'));
-				const studentsData = studentsSnapshot.docs.map(doc => ({
-					id: doc.id,
-					...doc.data()
-				}));
-				setAllStudents(studentsData);
-			} catch (error) {
-				console.error("Error fetching students: ", error);
-			} finally {
-				setLoadingStudents(false);
-			}
-		};
 		// fetch teachers
 		const fetchTeachers = async () => {
 			try {
@@ -53,8 +31,9 @@ const ClassEditModal = ({ classData, onClose, onSubmit, onAddStudents }) => {
 				setLoadingTeachers(false);
 			}
 		};
-		fetchStudents();
+
 		fetchTeachers();
+
 	}, []);
 	
 	const handleChange = (e) => {
@@ -62,23 +41,9 @@ const ClassEditModal = ({ classData, onClose, onSubmit, onAddStudents }) => {
 		setFormData(prev => ({ ...prev, [name]: value }));
 	};
 
-	const handleStudentSelect = (studentId) => {
-		setSelectedStudents(prev =>
-			prev.includes(studentId)
-				? prev.filter(id => id !== studentId)
-				: [...prev, studentId]
-		);
-	};
-
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		onSubmit(formData);
-	};
-
-	const handleAddSelectedStudents = () => {
-		onAddStudents(selectedStudents);
-		setSelectedStudents([]);
-		onClose();
 	};
 
 	return (
@@ -89,14 +54,14 @@ const ClassEditModal = ({ classData, onClose, onSubmit, onAddStudents }) => {
 					<div className="form-group">
 						<label>Teacher</label>
 						{loadingTeachers ? (
-							<p>Loading teachers...</p>
+							<p>Loading...</p>
 						) : (
 							<select
 								name="teacher"
 								value={formData.teacher || ''}
 								onChange={handleChange}
 							>
-								<option value="">-- Select a teacher --</option>
+								<option value="">Select a teacher</option>
 								{allTeachers.map(teacher => (
 									<option key={teacher.id} value={teacher.id}>
 										{teacher.name}
@@ -118,39 +83,8 @@ const ClassEditModal = ({ classData, onClose, onSubmit, onAddStudents }) => {
 						<button type="button" onClick={onClose}>Cancel</button>
 						<button type="submit">Save Changes</button>
 					</div>
+					
 				</form>
-
-				<div className="add-students-section">
-					<h3>Add Students</h3>
-
-					{loadingStudents ? (
-						<p>Loading students...</p>
-					) : (
-						<>
-							<div className="students-list">
-								{allStudents.map(student => (
-									<div key={student.id} className="student-item">
-										<label>
-											<input
-												type="checkbox"
-												checked={selectedStudents.includes(student.id)}
-												onChange={() => handleStudentSelect(student.id)}
-											/>
-											{student.first_name} {student.last_name}
-										</label>
-									</div>
-								))}
-							</div>
-
-							<button
-								onClick={handleAddSelectedStudents}
-								disabled={selectedStudents.length === 0}
-							>
-								Add Selected Students
-							</button>
-						</>
-					)}
-				</div>
 			</div>
 		</div>
 	);

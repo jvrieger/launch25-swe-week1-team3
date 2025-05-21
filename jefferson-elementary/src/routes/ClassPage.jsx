@@ -8,6 +8,7 @@ import DirectoryPersonList from '../components/DirectoryPersonList';
 import { doc, getDoc, updateDoc, getDocs, collection, deleteField } from "firebase/firestore";
 import { db } from '../../firebase';
 import ClassEditModal from '../components/ClassEditModal';
+import AddStudentsModal from '../components/AddStudentsModal';
 import "../styles/Directory.css";
 
 const ClassPage = () => {
@@ -19,6 +20,7 @@ const ClassPage = () => {
 	const [students, setStudents] = useState([]);
 	const [teachers, setTeachers] = useState([]);
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [isAddStudentsModalOpen, setIsAddStudentsModalOpen] = useState(false);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -73,7 +75,21 @@ const ClassPage = () => {
 			const classDocRef = doc(db, "classes", classId);
 			await updateDoc(classDocRef, updatedData);
 			setClassData(prev => ({ ...prev, ...updatedData }));
+
+			// if the teacher for the class was updated, get new teacher data to change page
+			if (updatedData.teacher !== classData.teacher) {
+				const teacherDoc = await getDoc(doc(db, "teachers", updatedData.teacher));
+				if (teacherDoc.exists()) {
+					setTeachers([{ id: teacherDoc.id, ...teacherDoc.data() }]);
+				} else {
+					setTeachers([]);
+				}
+			} else {
+				setTeachers([]);
+			}
+
 			setIsEditModalOpen(false);
+			setIsAddStudentsModalOpen(false);
 		} catch (error) {
 			console.error("Error updating class. ", error)
 		}
@@ -204,7 +220,7 @@ const ClassPage = () => {
 							<h2>Class Roster</h2>
 							<button
 								className="add-student-button"
-								onClick={() => setIsEditModalOpen(true)}
+								onClick={() => setIsAddStudentsModalOpen(true)}
 							>
 								Add Students
 							</button>
@@ -213,7 +229,7 @@ const ClassPage = () => {
 						<DirectoryPersonList
 							people={students}
 							onEdit={(student) => {
-								const newGrade = prompt("enter new grade:", student.grade);
+								const newGrade = prompt("Enter a new grade:", student.grade);
 								if (newGrade !== null && !isNaN(newGrade)) {
 									handleUpdateGrade(student.id, parseFloat(newGrade));
 								}
@@ -239,7 +255,7 @@ const ClassPage = () => {
 										onChange={(e) => handleUpdateGrade(student.id, parseFloat(e.target.value))}
 										min="0"
 										max="100"
-										step="0.1"
+										step="1.0"
 									/>
 								</div>
 							))}
@@ -290,6 +306,13 @@ const ClassPage = () => {
 					classData={classData}
 					onClose={() => setIsEditModalOpen(false)}
 					onSubmit={handleUpdateClass}
+					onAddStudents={handleAddStudents}
+				/>
+			)}
+
+			{isAddStudentsModalOpen && (
+				<AddStudentsModal
+					onClose={() => setIsAddStudentsModalOpen(false)}
 					onAddStudents={handleAddStudents}
 				/>
 			)}
