@@ -8,21 +8,25 @@
 }
 
 .calendar-title {
-  font-size: 3rem;
   font-weight: bold;
   color: #000000;
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
 }
 
 .calendar-instructions {
   margin-bottom: 1rem;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
 }
 
 .calendar-box {
   background-color: #085478;
   padding: 1rem;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   max-width: 600px;
   width: 100%;
 }
@@ -36,7 +40,7 @@
 .school-calendar__navigation {
   background-color: #003366;
   color: white;
-  font-size: 1.4rem;
+  font-size: 2rem;
   font-weight: bold;
 }
 
@@ -51,27 +55,28 @@
 /* Days */
 .react-calendar__tile {
   height: 100px;
-  font-size: 1rem;
+  font-size: 24px;
+  font-weight: 600;
   padding: 0.5rem;
   text-align: left;
 }
 
 .react-calendar__tile--now {
-  background-color: #e6f7ff !important;
+  background-color: #fcd3b4 !important;
 }
 
 .react-calendar__tile--active {
-  background-color: #ffcc00 !important;
+  background-color: #FF9505 !important;
   color: #000 !important;
 }
 
 .react-calendar__tile:hover {
-  background-color: #cce5ff !important;
+  background-color: #ffc67f !important;
   cursor: pointer;
 }
 
 .calendar-event {
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: #333;
   margin-top: 0.25rem;
 }
@@ -113,6 +118,37 @@
   justify-content: space-between;
 }
 
+.submit-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  background-color: #FF9505;
+  color: white;
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+.submit-button:hover {
+  background-color: #EC4E20;
+}
+
+.cancel-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  background-color: #EC4E20;
+  color: white;
+  font-weight: bold;
+}
+
+.cancel-button:hover {
+  background-color: #FF9505;
+}
+
 .modal input {
   width: 100%;
   padding: 0.5rem;
@@ -130,7 +166,7 @@
   width: 60px;
   height: 60px;
   font-size: 2rem;
-  background-color: #e36905;
+  background-color: #EC4E20;
   color: white;
   border: none;
   border-radius: 50%;
@@ -139,5 +175,5 @@
   z-index: 999;
 }
 .floating-add-button:hover {
-  background-color: #e36905;
+  background-color: #FF9505;
 }

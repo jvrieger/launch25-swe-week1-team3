@@ -120,10 +120,10 @@ const SchoolCalendar = () => {
                 />
               </label>
               <div className="modal-buttons">
-                <button type="submit">Submit</button>
-                <button type="button" onClick={() => setShowForm(false)}>
+                <button className="cancel-button" type="button" onClick={() => setShowForm(false)}>
                   Cancel
                 </button>
+                <button className="submit-button" type="submit">Submit</button>
               </div>
             </form>
           </div>
