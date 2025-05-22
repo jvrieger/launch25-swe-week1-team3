@@ -220,6 +220,9 @@ const ClassPage = () => {
 			gradeAvg: newAvg
 		});
 
+		// Updates grade locally
+		setClassData(prev => ({ ...prev, gradeAvg: newAvg }));
+
 		setStudents(prev =>
 			prev.map(s => s.id === studentId ? { ...s, grade: newGrade } : s)
 		);
