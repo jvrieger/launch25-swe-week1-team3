@@ -1,4 +1,7 @@
 # Thomas Jefferson Elementary School Dashboard
+
+https://github.com/user-attachments/assets/b7816298-385a-4790-9bf1-da5096bcd427
+
 #### Summary
 
 This week you will be producing a web application as a team, due by 2:00 pm on Friday, and then presenting your work for the rest of SWE Launch and the Full Time staff on Friday. This application will use all of the skills we have learned so far, as well as some new skills we will cover this week. The presentation will be professional and well practiced. 
