@@ -231,7 +231,7 @@ const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData
 								<option value="">Choose a class</option>
 								{availableClasses.map(cls => (
 									<option key={cls.id} value={cls.id}>
-										{cls.description}
+										{cls.subject}
 									</option>
 								))}
 							</select>
