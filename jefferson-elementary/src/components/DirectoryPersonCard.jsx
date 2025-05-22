@@ -23,7 +23,9 @@ const DirectoryPersonCard = ({ person, onEdit, onDelete }) => {
       const map = {};
       snapshot.forEach(doc => {
         const data = doc.data();
-        map[doc.id] = data.subject; 
+        const teacher = data.teacher || 'Unknown';
+        const subject = data.subject || 'Unknown Subject';
+        map[doc.id] = `${teacher}’s ${subject} Class`;
       });
       setClassMap(map);
     };
@@ -32,7 +34,7 @@ const DirectoryPersonCard = ({ person, onEdit, onDelete }) => {
 
   const getClassDescriptions = (ids) => {
     if (!Array.isArray(ids)) return ids;
-    return ids.map(id => classMap[id] || id).join(', ');
+    return ids.map(id => classMap[id] || `Unknown Class (${id})`).join(', ');
   };
 
   return (

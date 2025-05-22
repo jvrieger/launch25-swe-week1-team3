@@ -64,11 +64,11 @@ const SchoolCalendar = () => {
             event.id === editEventId ? { ...event, ...eventData } : event
           )
         );
-        alert('Event updated!');
+        // alert('Event updated!');
       } else {
         const docRef = await addDoc(collection(db, 'events'), eventData);
         setEvents((prev) => [...prev, { ...eventData, id: docRef.id }]);
-        alert('Event added!');
+        // alert('Event added!');
       }
 
       setFormData({ title: '', description: '', time: '' });
@@ -88,7 +88,7 @@ const SchoolCalendar = () => {
     try {
       await deleteDoc(doc(db, 'events', id));
       setEvents((prev) => prev.filter((event) => event.id !== id));
-      alert('Event deleted!');
+      // alert('Event deleted!');
     } catch (error) {
       console.error('Error deleting event:', error);
     }

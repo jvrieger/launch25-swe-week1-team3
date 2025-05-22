@@ -203,7 +203,9 @@ const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData
 									const classObj = (availableClasses || []).find(c => c.id === classId);
 									return (
 										<div key={index} className="class-item">
-											<span>{classObj.teacher}‘s {classObj?.subject || classId} Class</span>
+											<span>
+												{classObj ? `${classObj.teacher}’s ${classObj.subject} Class` : `${classId}`}
+											</span>
 											<button
 												type="button"
 												className="btn btn-delete-small"
