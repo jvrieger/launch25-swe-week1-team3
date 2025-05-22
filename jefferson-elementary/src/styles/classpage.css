@@ -323,3 +323,16 @@
 	  margin-bottom: 10px;
 	}
   }
+
+  .grades-list {
+	margin-top: 15px;
+  }
+
+  .grade-item {
+	display: flex;
+	justify-content: space-between;
+  }
+
+  .grade-item input[type="number"] {
+	text-align: center;
+  }
