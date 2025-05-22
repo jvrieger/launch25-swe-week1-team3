@@ -51,20 +51,12 @@ const Directory = () => {
     fetchData();
   }, []);
 
-  const handleAddPerson = async (person) => {
-    try {
-      const collectionName = activeTab; // 'students' or 'teachers'
-      const docRef = await addDoc(collection(db, collectionName), person);
-      
-      // Update local state with the new person (including the auto-generated ID)
-      const newPerson = { ...person, id: docRef.id };
-      const newPeople = { ...people };
-      newPeople[activeTab] = [...newPeople[activeTab], newPerson];
-      setPeople(newPeople);
-    } catch (error) {
-      console.error("Error adding document: ", error);
-    }
+  const handleAddPerson = (personWithId) => {
+    const newPeople = { ...people };
+    newPeople[activeTab] = [...newPeople[activeTab], personWithId];
+    setPeople(newPeople);
   };
+
 
   const handleEditPerson = async (updatedPerson) => {
     try {

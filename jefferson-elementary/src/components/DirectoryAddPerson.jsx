@@ -93,36 +93,37 @@ const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData
 		const { addClass, ...dataToSubmit } = submissionData;
 
 		const collection_name = personType === 'student' ? 'students' : 'teachers';
-		let studentId;
+
+		let docId;
 
 		if (initialData?.id) {
-			// updating existing student
+			// Update existing document
 			await updateDoc(doc(db, collection_name, initialData.id), dataToSubmit);
-			studentId = initialData.id;
+			docId = initialData.id;
 		} else {
-			// adding new student
+			// Add new document
 			const docRef = await addDoc(collection(db, collection_name), dataToSubmit);
-			studentId = docRef.id;
+			docId = docRef.id;
 		}
 
-		if (personType === "student" && studentId) {
+		// Update each class with the new student
+		if (personType === "student" && docId) {
 			for (const classId of formData.classes) {
-				const classRef = doc(db, "classes", classId);
-				// initialize student in the selected class's array with grade 0
-				const updateData = {
-					[`students.${studentId}`]: 0
-				};
-
-				await updateDoc(classRef, updateData);
+			const classRef = doc(db, "classes", classId);
+			await updateDoc(classRef, {
+				[`students.${docId}`]: 0
+			});
 			}
 		}
 
-		if (onSubmit) {
-			await onSubmit(dataToSubmit);
+		// Notify parent to update UI state
+		if (onSubmit && !initialData?.id) {
+			onSubmit({ ...dataToSubmit, id: docId });
 		}
 
 		onClose();
 	};
+
 
 	if (!isOpen) return null;
 
@@ -202,7 +203,7 @@ const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData
 									const classObj = (availableClasses || []).find(c => c.id === classId);
 									return (
 										<div key={index} className="class-item">
-											<span>{classObj?.description || classId}</span>
+											<span>{classObj.teacher}‘s {classObj?.subject || classId} Class</span>
 											<button
 												type="button"
 												className="btn btn-delete-small"
@@ -231,8 +232,8 @@ const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData
 								<option value="">Choose a class</option>
 								{availableClasses.map(cls => (
 									<option key={cls.id} value={cls.id}>
-										{cls.subject}
-									</option>
+                                        {cls.teacher}’s {cls.subject} Class
+                                    </option>
 								))}
 							</select>
 							<button
