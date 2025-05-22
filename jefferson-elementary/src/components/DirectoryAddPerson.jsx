@@ -110,7 +110,7 @@ const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData
     <div className="modal-overlay">
       <div className="modal-content">
         <h2>{initialData ? 'Edit' : 'Add New'} {personType}</h2>
-        <form onSubmit={handleStudentSubmit}>
+        <form onSubmit={handleSubmit}>
           {personType === 'student' ? (
             <>
               <div className="form-group">
