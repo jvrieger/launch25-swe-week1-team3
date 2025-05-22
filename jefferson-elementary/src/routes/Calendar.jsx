@@ -26,7 +26,7 @@ const SchoolCalendar = () => {
 
   const [events, setEvents] = useState([]);
 
-  // 🔄 Fetch events from Firebase
+  // Fetch events from Firebase
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -44,7 +44,6 @@ const SchoolCalendar = () => {
     fetchEvents();
   }, []);
 
-  // 📤 Handle new or edited event submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -64,11 +63,9 @@ const SchoolCalendar = () => {
             event.id === editEventId ? { ...event, ...eventData } : event
           )
         );
-        // alert('Event updated!');
       } else {
         const docRef = await addDoc(collection(db, 'events'), eventData);
         setEvents((prev) => [...prev, { ...eventData, id: docRef.id }]);
-        // alert('Event added!');
       }
 
       setFormData({ title: '', description: '', time: '' });
@@ -80,7 +77,6 @@ const SchoolCalendar = () => {
     }
   };
 
-  // 🗑 Handle delete
   const handleDelete = async (id) => {
     const confirm = window.confirm('Are you sure you want to delete this event?');
     if (!confirm) return;
@@ -88,20 +84,24 @@ const SchoolCalendar = () => {
     try {
       await deleteDoc(doc(db, 'events', id));
       setEvents((prev) => prev.filter((event) => event.id !== id));
-      // alert('Event deleted!');
     } catch (error) {
       console.error('Error deleting event:', error);
     }
   };
 
-  // 📝 Update input fields
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // 📅 Filter events by selected date
   const eventsForSelectedDate = events.filter(
     (event) => event.date === selectedDate.toDateString()
   );
+
+  // Show event titles in the calendar tiles
+  const getEventsForDate = (date) => {
+    return events.filter(
+      (event) => event.date === date.toDateString()
+    );
+  };
 
   return (
     <div className="calendar-container">
@@ -112,9 +112,21 @@ const SchoolCalendar = () => {
         onChange={setSelectedDate}
         value={selectedDate}
         className="school-calendar"
+        tileContent={({ date }) => {
+          const dayEvents = getEventsForDate(date);
+          return (
+            <div className="calendar-tile-events">
+              {dayEvents.map((event, idx) => (
+                <div key={idx} className="calendar-tile-title">
+                  {event.name}
+                </div>
+              ))}
+            </div>
+          );
+        }}
       />
 
-      {/* ➕ Add Button */}
+      {/* Add Button */}
       <button
         className="floating-add-button"
         onClick={() => {
@@ -127,7 +139,7 @@ const SchoolCalendar = () => {
         +
       </button>
 
-      {/* 🧾 Event Form Modal */}
+      {/* Modal */}
       {showForm && (
         <div className="modal-overlay">
           <div className="modal">
@@ -176,7 +188,7 @@ const SchoolCalendar = () => {
         </div>
       )}
 
-      {/* 📋 Event List */}
+      {/* Event List */}
       <div className="event-list">
         <h3>Events on {selectedDate.toDateString()}</h3>
         {eventsForSelectedDate.length > 0 ? (
