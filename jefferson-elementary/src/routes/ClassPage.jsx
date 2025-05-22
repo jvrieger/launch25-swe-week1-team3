@@ -290,6 +290,7 @@ const ClassPage = () => {
 								<div key={student.id} className="grade-item">
 									<span>{`${student.first_name} ${student.last_name}`}</span>
 									<input
+										className='grade-input'
 										type="number"
 										value={student.grade}
 										onChange={(e) => handleUpdateGrade(student.id, parseFloat(e.target.value))}
