@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "../styles/Directory.css";
 import { db } from "../../firebase";
-import { getDocs, collection, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { getDocs, collection, doc, updateDoc, arrayUnion, addDoc } from "firebase/firestore";
 
 const DirectoryAddPerson = ({ isOpen, onClose, onSubmit, personType, initialData }) => {
 	// function to return the initial empty state (reset form for new person)
