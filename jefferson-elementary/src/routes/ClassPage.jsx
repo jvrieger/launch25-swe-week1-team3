@@ -54,7 +54,7 @@ const ClassPage = () => {
 				// teacher data
 				if (classDoc.data().teacher) {
 					const teacherName = classDoc.data().teacher;
-					
+
 					// teacher name stored as id
 					try {
 						const teacherDoc = await getDoc(doc(db, "teachers", classDoc.data().teacher));
@@ -88,18 +88,6 @@ const ClassPage = () => {
 			const classDocRef = doc(db, "classes", classId);
 			await updateDoc(classDocRef, updatedData);
 			setClassData(prev => ({ ...prev, ...updatedData }));
-
-			// if the teacher for the class was updated, get new teacher data to change page
-			// if (updatedData.teacher !== classData.teacher) {
-			// 	const teacherDoc = await getDoc(doc(db, "teachers", updatedData.teacher));
-			// 	if (teacherDoc.exists()) {
-			// 		setTeachers([{ id: teacherDoc.id, ...teacherDoc.data() }]);
-			// 	} else {
-			// 		setTeachers([]);
-			// 	}
-			// } else {
-			// 	setTeachers([]);
-			// }
 
 			setIsEditModalOpen(false);
 			setIsAddStudentsModalOpen(false);
@@ -141,21 +129,62 @@ const ClassPage = () => {
 			};
 		});
 
+		// update each students' 'classes' field to include the new class
+		for (const studentId of studentIds) {
+			const studentRef = doc(db, "students", studentId);
+			const studentDoc = await getDoc(studentRef);
+
+			if (studentDoc.exists()) {
+				const studentData = studentDoc.data();
+				const currentClasses = studentData.classes || [];
+
+				// add the current class if the student is not already enrolled ; avoid repeats
+				if (!currentClasses.includes(classId)) {
+					await updateDoc(studentRef, {
+						classes: [...currentClasses, classId]
+					});
+				}
+			}
+
+			// refresh students 
+			const studentPromises = Object.keys(updatedStudents).map(async (id) => {
+				return {
+					id,
+					...studentDoc.data(),
+					grade: updatedStudents[id]
+				};
+			});
+		}
+
 		const fetchedStudents = await Promise.all(studentPromises);
 		setStudents(fetchedStudents);
 
 	}
 
 	// deleting students from a class
+
 	const handleRemoveStudent = async (studentId) => {
 		try {
 			const classDocRef = doc(db, "classes", classId);
-			// remove student 
+			// remove student from document
 			await updateDoc(classDocRef, {
 				[`students.${studentId}`]: deleteField()
 			});
 
-			// get new grade average 
+			// remove class from student's class array
+			const studentRef = doc(db, "students", studentId);
+			const studentDoc = await getDoc(studentRef);
+
+			if (studentDoc.exists()) {
+				const studentData = studentDoc.data();
+				const updatedClasses = (studentData.classes || []).filter(cId => cId !== classId);
+
+				await updateDoc(studentRef, {
+					classes: updatedClasses
+				});
+			}
+
+			// get new grade average
 			const classDoc = await getDoc(classDocRef);
 			const updatedStudents = classDoc.data().students || {};
 			const grades = Object.values(updatedStudents);
@@ -174,31 +203,26 @@ const ClassPage = () => {
 	};
 
 	const handleUpdateGrade = async (studentId, newGrade) => {
-		try {
-			const classDocRef = doc(db, "classes", classId);
+		const classDocRef = doc(db, "classes", classId);
 
-			// update student's grade
-			await updateDoc(classDocRef, {
-				[`students.${studentId}`]: newGrade
-			});
+		// update student's grade
+		await updateDoc(classDocRef, {
+			[`students.${studentId}`]: newGrade
+		});
 
-			// new grade average
-			const classDoc = await getDoc(classDocRef);
-			const updatedStudents = classDoc.data().students || {};
-			const grades = Object.values(updatedStudents);
-			const newAvg = grades.reduce((sum, grade) => sum + grade, 0) / grades.length;
+		// new grade average
+		const classDoc = await getDoc(classDocRef);
+		const updatedStudents = classDoc.data().students || {};
+		const grades = Object.values(updatedStudents);
+		const newAvg = grades.reduce((sum, grade) => sum + grade, 0) / grades.length;
 
-			await updateDoc(classDocRef, {
-				gradeAvg: newAvg
-			});
+		await updateDoc(classDocRef, {
+			gradeAvg: newAvg
+		});
 
-			setStudents(prev =>
-				prev.map(s => s.id === studentId ? { ...s, grade: newGrade } : s)
-			);
-
-		} catch (error) {
-			console.error("Error updating grade: ", error);
-		}
+		setStudents(prev =>
+			prev.map(s => s.id === studentId ? { ...s, grade: newGrade } : s)
+		);
 	};
 
 	const renderTab = () => {
