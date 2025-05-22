@@ -23,7 +23,7 @@ const DirectoryPersonCard = ({ person, onEdit, onDelete }) => {
       const map = {};
       snapshot.forEach(doc => {
         const data = doc.data();
-        map[doc.id] = data.description; 
+        map[doc.id] = data.subject; 
       });
       setClassMap(map);
     };
