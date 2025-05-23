@@ -32,9 +32,12 @@ const DirectoryPersonCard = ({ person, onEdit, onDelete }) => {
     fetchClasses();
   }, []);
 
-  const getClassDescriptions = (ids) => {
-    if (!Array.isArray(ids)) return ids;
-    return ids.map(id => classMap[id] || `Unknown Class (${id})`).join(', ');
+ const getClassDescriptions = (ids) => {
+  if (!Array.isArray(ids)) return ids;
+  return ids
+    .map(id => classMap[id])
+    .filter(desc => desc)
+    .join(', ');
   };
 
   return (
