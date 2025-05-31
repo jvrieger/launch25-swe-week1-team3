@@ -1,5 +1,8 @@
 # Thomas Jefferson Elementary School Dashboard
 
+[Launch Thomas Jefferson Presentation.pdf](https://github.com/user-attachments/files/20535935/Launch.Thomas.Jefferson.Presentation.pdf)
+
+
 https://github.com/user-attachments/assets/b7816298-385a-4790-9bf1-da5096bcd427
 
 #### Summary
